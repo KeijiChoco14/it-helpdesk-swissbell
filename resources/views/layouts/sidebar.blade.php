@@ -3,10 +3,8 @@
     <!-- Logo -->
     <div class="px-6 py-5 border-b border-slate-800">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center shadow-lg shadow-red-500/30">
-                <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.712 4.33a9.027 9.027 0 011.652 1.306c.51.51.944 1.064 1.306 1.652M16.712 4.33l-3.448 4.138m3.448-4.138a9.014 9.014 0 00-9.424 0M19.67 7.288l-4.138 3.448m4.138-3.448a9.014 9.014 0 010 9.424m-4.138-5.976a3.736 3.736 0 00-.88-1.388 3.737 3.737 0 00-1.388-.88m2.268 2.268a3.765 3.765 0 010 2.528m-2.268-4.796l-3.448 4.138m0 0a3.765 3.765 0 00-2.528 0m2.528 0l-4.138 3.448m0 0a9.027 9.027 0 01-1.306-1.652m1.306 1.652l4.138-3.448M4.33 16.712a9.014 9.014 0 010-9.424m4.138 5.976a3.736 3.736 0 01-.88 1.388 3.737 3.737 0 01-1.388.88m2.268-2.268l-4.138 3.448M7.288 4.33l3.448 4.138m0 0a3.765 3.765 0 012.528 0m-2.528 0L7.288 4.33m0 0A9.027 9.027 0 005.982 5.636M19.67 16.712l-4.138-3.448"/>
-                </svg>
+            <div class="w-12 h-12 flex items-center justify-center shrink-0">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-full h-full object-contain">
             </div>
             <div>
                 <h1 class="text-lg font-bold text-white tracking-tight">IT Helpdesk</h1>
