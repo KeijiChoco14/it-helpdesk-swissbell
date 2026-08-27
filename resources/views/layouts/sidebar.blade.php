@@ -4,7 +4,7 @@
     <div class="px-6 py-5 border-b border-slate-800">
         <div class="flex items-center gap-3">
             <div class="w-12 h-12 flex items-center justify-center shrink-0">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-full h-full object-contain">
+                <img src="{{ asset('images/logoswissbell.jpg') }}" alt="Logo" class="w-full h-full object-contain">
             </div>
             <div>
                 <h1 class="text-lg font-bold text-white tracking-tight">IT Helpdesk</h1>
