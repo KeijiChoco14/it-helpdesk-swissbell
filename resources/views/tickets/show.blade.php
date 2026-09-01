@@ -42,9 +42,69 @@
                     {{ $ticket->description }}
                 </div>
             </div>
+            </div>
+
+            <!-- Rating Section -->
+            @if($ticket->status === 'CLOSED' && $ticket->user_id === auth()->id() && !$ticket->rating)
+                <div class="glass-card p-6 border-2 border-red-100 bg-red-50/20">
+                    <h3 class="text-base font-bold text-slate-800 mb-2">Rate Our Service</h3>
+                    <p class="text-sm text-slate-500 mb-4">How satisfied are you with the resolution of this ticket?</p>
+                    <form action="{{ route('tickets.rate', $ticket) }}" method="POST">
+                        @csrf
+                        <div class="flex items-center gap-2 mb-4" x-data="{ rating: 0, hover: 0 }">
+                            <input type="hidden" name="rating" x-model="rating">
+                            <template x-for="i in 5">
+                                <button type="button" 
+                                    @click="rating = i" 
+                                    @mouseenter="hover = i" 
+                                    @mouseleave="hover = 0"
+                                    class="focus:outline-none transition-colors"
+                                    :class="i <= (hover || rating) ? 'text-amber-400' : 'text-slate-300'">
+                                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                </button>
+                            </template>
+                        </div>
+                        <textarea name="feedback" rows="2" class="form-input text-sm mb-4" placeholder="Optional feedback..."></textarea>
+                        <button type="submit" class="btn btn-primary text-sm w-full sm:w-auto">Submit Feedback</button>
+                    </form>
+                </div>
+            @elseif($ticket->rating)
+                <div class="glass-card p-6">
+                    <h3 class="text-sm font-bold text-slate-800 mb-2">Service Rating</h3>
+                    <div class="flex items-center gap-1 mb-2">
+                        @for($i = 1; $i <= 5; $i++)
+                            <svg class="w-5 h-5 {{ $i <= $ticket->rating ? 'text-amber-400' : 'text-slate-300' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        @endfor
+                    </div>
+                    @if($ticket->feedback)
+                        <p class="text-sm text-slate-600 italic bg-slate-50 p-3 rounded-lg border border-slate-100">"{{ $ticket->feedback }}"</p>
+                    @endif
+                </div>
+            @endif
 
             <!-- Comments -->
-            <div class="glass-card">
+            <div class="glass-card" x-data="{
+                poll() {
+                    setInterval(async () => {
+                        try {
+                            let res = await fetch('{{ route('tickets.comments.index', $ticket) }}');
+                            let data = await res.json();
+                            let container = this.$refs.commentsContainer;
+                            let isScrolledToBottom = container.scrollHeight - container.clientHeight <= container.scrollTop + 10;
+                            container.innerHTML = data.html || '<div class=\'text-center py-8\'><p class=\'text-sm text-slate-400\'>No comments yet.</p></div>';
+                            if (isScrolledToBottom) {
+                                container.scrollTop = container.scrollHeight;
+                            }
+                        } catch (e) {}
+                    }, 5000);
+                },
+                init() {
+                    this.$nextTick(() => {
+                        this.$refs.commentsContainer.scrollTop = this.$refs.commentsContainer.scrollHeight;
+                    });
+                    this.poll();
+                }
+            }">
                 <div class="px-6 py-4 border-b border-slate-200/60">
                     <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
                         <svg class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>
@@ -52,21 +112,9 @@
                     </h3>
                 </div>
                 <div class="p-6">
-                    <div class="space-y-4 mb-6">
+                    <div class="space-y-4 mb-6 max-h-[500px] overflow-y-auto pr-2" x-ref="commentsContainer">
                         @forelse($ticket->comments as $comment)
-                            <div class="flex gap-3">
-                                <div class="w-8 h-8 rounded-full bg-gradient-to-br {{ $comment->user->role === 'it_admin' ? 'from-red-400 to-orange-500' : ($comment->user->role === 'it_support' ? 'from-emerald-400 to-teal-500' : 'from-red-400 to-purple-500') }} flex items-center justify-center text-[10px] font-bold text-white shrink-0 mt-0.5">{{ strtoupper(substr($comment->user->name, 0, 1)) }}</div>
-                                <div class="flex-1 bg-slate-50 rounded-xl p-4 border border-slate-100">
-                                    <div class="flex items-center justify-between mb-1.5">
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-sm font-semibold text-slate-800">{{ $comment->user->name }}</span>
-                                            <span class="text-[10px] font-medium text-slate-400 uppercase px-1.5 py-0.5 bg-slate-100 rounded">{{ str_replace('_', ' ', $comment->user->role) }}</span>
-                                        </div>
-                                        <span class="text-xs text-slate-400">{{ $comment->created_at->diffForHumans() }}</span>
-                                    </div>
-                                    <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{{ $comment->comment }}</p>
-                                </div>
-                            </div>
+                            @include('tickets.partials.comment', ['comment' => $comment])
                         @empty
                             <div class="text-center py-8">
                                 <svg class="w-10 h-10 text-slate-300 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>
@@ -76,10 +124,20 @@
                     </div>
 
                     @if($ticket->status !== 'CLOSED')
-                        <form action="{{ route('tickets.comments.store', $ticket) }}" method="POST">
+                        <form action="{{ route('tickets.comments.store', $ticket) }}" method="POST" x-data="{ commentText: '' }">
                             @csrf
+                            @if(isset($cannedResponses) && $cannedResponses->count() > 0)
+                                <div class="mb-3 flex justify-end">
+                                    <select class="form-select text-sm py-1.5 w-auto" @change="if($event.target.value) { commentText = $event.target.value; $event.target.value=''; }">
+                                        <option value="">⚡ Quick Reply...</option>
+                                        @foreach($cannedResponses as $cr)
+                                            <option value="{{ $cr->content }}">{{ $cr->title }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            @endif
                             <div class="relative">
-                                <textarea name="comment" rows="3" class="form-input pr-24" placeholder="Write a comment..." required></textarea>
+                                <textarea x-model="commentText" name="comment" rows="3" class="form-input pr-24" placeholder="Write a comment..." required></textarea>
                                 <div class="absolute bottom-3 right-3">
                                     <button type="submit" class="btn btn-primary text-xs px-3 py-1.5">
                                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>

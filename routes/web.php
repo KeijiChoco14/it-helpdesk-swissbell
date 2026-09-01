@@ -4,12 +4,13 @@ use App\Http\Controllers\CleaningTaskController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\KnowledgeBaseArticleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\TicketAssignmentController;
-use App\Http\Controllers\KnowledgeBaseArticleController;
 use App\Http\Controllers\TicketCommentController;
 use App\Http\Controllers\TicketController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -30,6 +31,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard')->middleware('role:employee');
 
+    Route::post('/locale', function (Request $request) {
+        $validated = $request->validate(['locale' => 'required|in:en,id']);
+        if (auth()->check()) {
+            auth()->user()->update(['locale' => $validated['locale']]);
+        }
+        session(['locale' => $validated['locale']]);
+
+        return back();
+    })->name('locale.update');
+
     Route::get('/it/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard.it')->middleware('role:it_support');
 
@@ -38,11 +49,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('tickets/export', [TicketController::class, 'exportCsv'])->name('tickets.export');
     Route::resource('tickets', TicketController::class);
+    Route::get('tickets/{ticket}/comments', [TicketCommentController::class, 'index'])->name('tickets.comments.index');
     Route::post('tickets/{ticket}/comments', [TicketCommentController::class, 'store'])->name('tickets.comments.store');
     Route::post('tickets/{ticket}/assign', [TicketAssignmentController::class, 'store'])->name('tickets.assign');
+    Route::post('tickets/{ticket}/rate', [TicketController::class, 'rate'])->name('tickets.rate');
 
     Route::resource('departments', DepartmentController::class)->except(['show']);
     Route::resource('staff', StaffController::class)->only(['index', 'create', 'store', 'destroy']);
+
+    Route::get('equipment/{equipment}/tag', [EquipmentController::class, 'tag'])->name('equipment.tag');
     Route::resource('equipment', EquipmentController::class);
     Route::post('equipment/{equipment}/assign', [EquipmentController::class, 'assign'])->name('equipment.assign');
     Route::post('equipment/{equipment}/return', [EquipmentController::class, 'returnEquipment'])->name('equipment.return');
@@ -50,7 +65,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/knowledge-base/manage', [KnowledgeBaseArticleController::class, 'manage'])->name('knowledge-base.manage');
     Route::resource('knowledge-base', KnowledgeBaseArticleController::class)->parameters([
-        'knowledge-base' => 'knowledgeBaseArticle'
+        'knowledge-base' => 'knowledgeBaseArticle',
     ]);
 
     Route::get('/notifications/{id}/read', function ($id) {

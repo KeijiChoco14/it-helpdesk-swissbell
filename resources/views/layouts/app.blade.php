@@ -16,15 +16,17 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased bg-slate-50 text-slate-900">
+    <body class="font-sans antialiased bg-slate-50 text-slate-900" x-data="{ sidebarOpen: false }">
         <div class="min-h-screen flex">
             <!-- Sidebar -->
             @auth
                 @include('layouts.sidebar')
+                <!-- Mobile overlay -->
+                <div x-show="sidebarOpen" class="fixed inset-0 bg-slate-900/50 z-30 lg:hidden" @click="sidebarOpen = false" x-transition.opacity style="display: none;"></div>
             @endauth
 
             <!-- Main Content Area -->
-            <div class="flex-1 @auth ml-64 @endauth">
+            <div class="flex-1 w-full min-w-0 @auth lg:ml-64 @endauth transition-all duration-300">
                 <!-- Top Bar -->
                 @auth
                     @include('layouts.topbar')

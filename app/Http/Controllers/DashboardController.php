@@ -37,6 +37,7 @@ class DashboardController extends Controller
             // Advanced Reporting for Admin
             $stats['by_category'] = Category::withCount('tickets')->get();
             $stats['by_status'] = Ticket::selectRaw('status, count(*) as count')->groupBy('status')->get();
+            $stats['avg_rating'] = Ticket::whereNotNull('rating')->avg('rating') ?? 0;
 
             return view('dashboard.admin', compact('stats'));
         }

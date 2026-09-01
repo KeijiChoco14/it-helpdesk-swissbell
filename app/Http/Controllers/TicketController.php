@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
+use App\Models\CannedResponse;
 use App\Models\Category;
 use App\Models\Ticket;
 use App\Models\User;
@@ -69,7 +70,12 @@ class TicketController extends Controller
         Gate::authorize('view', $ticket);
         $ticket->load(['user', 'department', 'category', 'assignedUser', 'comments.user', 'activityLogs']);
 
-        return view('tickets.show', compact('ticket'));
+        $cannedResponses = [];
+        if (in_array(auth()->user()->role, ['it_admin', 'it_support'])) {
+            $cannedResponses = CannedResponse::orderBy('title')->get();
+        }
+
+        return view('tickets.show', compact('ticket', 'cannedResponses'));
     }
 
     public function update(UpdateTicketRequest $request, Ticket $ticket)
@@ -94,6 +100,24 @@ class TicketController extends Controller
         return redirect()->back()->with('success', 'Ticket updated successfully.');
     }
 
+    public function rate(Request $request, Ticket $ticket)
+    {
+        Gate::authorize('view', $ticket); // Ensure they own the ticket or can view it
+
+        if ($ticket->status !== 'CLOSED' || $ticket->user_id !== $request->user()->id) {
+            abort(403, 'Only the ticket creator can rate a closed ticket.');
+        }
+
+        $validated = $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'feedback' => 'nullable|string|max:1000',
+        ]);
+
+        $ticket->update($validated);
+
+        return redirect()->back()->with('success', 'Thank you for your feedback!');
+    }
+
     public function exportCsv(Request $request)
     {
         Gate::authorize('viewAny', Ticket::class);
@@ -101,16 +125,16 @@ class TicketController extends Controller
         $tickets = Ticket::with(['category', 'user', 'assignedUser'])->latest()->get();
 
         $headers = [
-            "Content-type"        => "text/csv",
-            "Content-Disposition" => "attachment; filename=tickets_" . date('Y-m-d') . ".csv",
-            "Pragma"              => "no-cache",
-            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-            "Expires"             => "0"
+            'Content-type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename=tickets_'.date('Y-m-d').'.csv',
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
         ];
 
         $columns = ['Ticket Number', 'Title', 'Status', 'Priority', 'Category', 'Created By', 'Assigned To', 'Created At'];
 
-        $callback = function() use($tickets, $columns) {
+        $callback = function () use ($tickets, $columns) {
             $file = fopen('php://output', 'w');
             fputcsv($file, $columns);
 
@@ -123,7 +147,7 @@ class TicketController extends Controller
                     $ticket->category->name ?? 'N/A',
                     $ticket->user->name ?? 'N/A',
                     $ticket->assignedUser->name ?? 'N/A',
-                    $ticket->created_at->format('Y-m-d H:i:s')
+                    $ticket->created_at->format('Y-m-d H:i:s'),
                 ]);
             }
             fclose($file);

@@ -51,6 +51,13 @@ class EquipmentController extends Controller
         return redirect()->route('equipment.index')->with('success', 'Equipment added successfully.');
     }
 
+    public function tag(Equipment $equipment)
+    {
+        Gate::authorize('view', $equipment);
+
+        return view('equipment.tag', compact('equipment'));
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -104,7 +111,7 @@ class EquipmentController extends Controller
 
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
-            'notes' => 'nullable|string'
+            'notes' => 'nullable|string',
         ]);
 
         // If currently assigned, mark returned
@@ -113,7 +120,7 @@ class EquipmentController extends Controller
         }
 
         $equipment->update(['user_id' => $validated['user_id']]);
-        
+
         $equipment->assignments()->create([
             'user_id' => $validated['user_id'],
             'notes' => $validated['notes'] ?? null,

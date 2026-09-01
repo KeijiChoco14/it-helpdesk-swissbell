@@ -10,3 +10,4 @@ Artisan::command('inspire', function () {
 use Illuminate\Support\Facades\Schedule;
 
 Schedule::command('app:check-ticket-s-l-a')->hourly();
+Schedule::command('app:check-maintenance-tasks')->daily();

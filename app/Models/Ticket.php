@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['ticket_number', 'user_id', 'department_id', 'category_id', 'assigned_to', 'title', 'description', 'priority', 'status', 'location', 'device', 'resolution', 'due_at', 'resolved_at', 'closed_at'])]
+#[Fillable(['ticket_number', 'user_id', 'department_id', 'category_id', 'assigned_to', 'title', 'description', 'priority', 'status', 'location', 'device', 'resolution', 'due_at', 'resolved_at', 'closed_at', 'rating', 'feedback'])]
 class Ticket extends Model
 {
     /** @use HasFactory<TicketFactory> */
@@ -17,7 +17,7 @@ class Ticket extends Model
     {
         static::saving(function ($ticket) {
             // Only update due_at if priority changed and it's not resolved/closed yet
-            if ((!$ticket->exists || $ticket->isDirty('priority')) && !in_array($ticket->status, ['RESOLVED', 'CLOSED'])) {
+            if ((! $ticket->exists || $ticket->isDirty('priority')) && ! in_array($ticket->status, ['RESOLVED', 'CLOSED'])) {
                 $ticket->due_at = match ($ticket->priority) {
                     'Low' => now()->addDays(3),
                     'Medium' => now()->addDays(1),
