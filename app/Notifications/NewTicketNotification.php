@@ -4,9 +4,10 @@ namespace App\Notifications;
 
 use App\Models\Ticket;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
-class NewTicketNotification extends Notification
+class NewTicketNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
