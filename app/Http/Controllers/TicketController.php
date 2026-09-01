@@ -70,7 +70,7 @@ class TicketController extends Controller
         Gate::authorize('view', $ticket);
         $ticket->load(['user', 'department', 'category', 'assignedUser', 'comments.user', 'activityLogs']);
 
-        $cannedResponses = [];
+        $cannedResponses = collect([]);
         if (in_array(auth()->user()->role, ['it_admin', 'it_support'])) {
             $cannedResponses = CannedResponse::orderBy('title')->get();
         }
