@@ -46,6 +46,8 @@ class TicketStatusUpdatedNotification extends Notification
             'message' => 'Your ticket status changed to '.$this->ticket->status,
         ];
     }
+
+    /**
      * Get the array representation of the notification.
      *
      * @return array<string, mixed>
