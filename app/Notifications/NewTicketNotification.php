@@ -24,7 +24,18 @@ class NewTicketNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', 'mail'];
+    }
+
+    public function toMail(object $notifiable): \Illuminate\Notifications\Messages\MailMessage
+    {
+        return (new \Illuminate\Notifications\Messages\MailMessage)
+            ->subject('New Ticket Created: ' . $this->ticket->ticket_number)
+            ->line('A new ticket has been created by ' . $this->ticket->user->name . '.')
+            ->line('Title: ' . $this->ticket->title)
+            ->line('Priority: ' . $this->ticket->priority)
+            ->action('View Ticket', route('tickets.show', $this->ticket->id))
+            ->line('Thank you for using our application!');
     }
 
     public function toDatabase(object $notifiable): array

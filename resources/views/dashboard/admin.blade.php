@@ -61,43 +61,24 @@
         <!-- By Category -->
         <div class="glass-card p-6">
             <h3 class="text-lg font-bold text-slate-800 mb-5 flex items-center gap-2">
-                <svg class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/></svg>
+                <svg class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z" /><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z" /></svg>
                 Tickets by Category
             </h3>
-            <div class="space-y-3">
-                @foreach($stats['by_category'] as $category)
-                    @php $max = $stats['by_category']->max('tickets_count') ?: 1; @endphp
-                    <div>
-                        <div class="flex justify-between items-center mb-1">
-                            <span class="text-sm font-medium text-slate-700">{{ $category->name }}</span>
-                            <span class="text-sm font-bold text-slate-900">{{ $category->tickets_count }}</span>
-                        </div>
-                        <div class="w-full bg-slate-100 rounded-full h-2">
-                            <div class="bg-gradient-to-r from-red-500 to-purple-500 h-2 rounded-full transition-all duration-500" style="width: {{ ($category->tickets_count / $max) * 100 }}%"></div>
-                        </div>
-                    </div>
-                @endforeach
+            <div class="relative h-64 w-full">
+                <canvas id="categoryChart"></canvas>
             </div>
         </div>
-
         <!-- By Status -->
         <div class="glass-card p-6">
             <h3 class="text-lg font-bold text-slate-800 mb-5 flex items-center gap-2">
                 <svg class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
                 Tickets by Status
             </h3>
-            <div class="space-y-4">
-                @foreach($stats['by_status'] as $statusStat)
-                    <div class="flex items-center justify-between p-3 rounded-xl {{ $statusStat->status === 'OPEN' ? 'bg-red-50' : ($statusStat->status === 'IN_PROGRESS' ? 'bg-amber-50' : ($statusStat->status === 'RESOLVED' ? 'bg-emerald-50' : 'bg-slate-50')) }}">
-                        <div class="flex items-center gap-3">
-                            <div class="w-3 h-3 rounded-full {{ $statusStat->status === 'OPEN' ? 'bg-red-500' : ($statusStat->status === 'IN_PROGRESS' ? 'bg-amber-500' : ($statusStat->status === 'RESOLVED' ? 'bg-emerald-500' : 'bg-slate-400')) }}"></div>
-                            <span class="text-sm font-semibold text-slate-700">{{ $statusStat->status }}</span>
-                        </div>
-                        <span class="text-2xl font-black {{ $statusStat->status === 'OPEN' ? 'text-red-600' : ($statusStat->status === 'IN_PROGRESS' ? 'text-amber-600' : ($statusStat->status === 'RESOLVED' ? 'text-emerald-600' : 'text-slate-600')) }}">{{ $statusStat->count }}</span>
-                    </div>
-                @endforeach
+            <div class="relative h-64 w-full">
+                <canvas id="statusChart"></canvas>
             </div>
         </div>
+
     </div>
 
     <!-- Quick Actions -->
@@ -110,4 +91,60 @@
             </a>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Category Pie Chart
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            const categoryData = {
+                labels: {!! json_encode($stats['by_category']->pluck('name')) !!},
+                datasets: [{
+                    data: {!! json_encode($stats['by_category']->pluck('tickets_count')) !!},
+                    backgroundColor: [
+                        '#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#64748b'
+                    ],
+                    borderWidth: 0
+                }]
+            };
+            new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: categoryData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right' }
+                    }
+                }
+            });
+
+            // Status Bar Chart
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            const statusData = {
+                labels: {!! json_encode($stats['by_status']->pluck('status')) !!},
+                datasets: [{
+                    label: 'Tickets',
+                    data: {!! json_encode($stats['by_status']->pluck('count')) !!},
+                    backgroundColor: '#ef4444',
+                    borderRadius: 6
+                }]
+            };
+            new Chart(statusCtx, {
+                type: 'bar',
+                data: statusData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { borderDash: [2, 4] } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        });
+    </script>
 </x-app-layout>

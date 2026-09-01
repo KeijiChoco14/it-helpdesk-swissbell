@@ -126,3 +126,24 @@
         @apply absolute -top-1 -right-1 inline-flex items-center justify-center w-5 h-5 text-[10px] font-bold text-white bg-red-500 rounded-full ring-2 ring-white;
     }
 }
+
+@media print {
+    body {
+        background-color: white !important;
+    }
+    nav, .sidebar, .btn, form, header, footer {
+        display: none !important;
+    }
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+    .glass-card {
+        border: none !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+    }
+    @page {
+        margin: 2cm;
+    }
+}

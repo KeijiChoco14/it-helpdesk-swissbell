@@ -75,10 +75,81 @@
                     </div>
                 @endcan
             </div>
+
+            @can('update', $equipment)
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-bold text-slate-800 mb-4">Manage Assignment</h3>
+                @if($equipment->user_id)
+                    <form action="{{ route('equipment.return', $equipment) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-secondary w-full justify-center">
+                            Return Equipment
+                        </button>
+                    </form>
+                    <div class="my-4 text-center text-xs text-slate-400 uppercase font-semibold">Or Reassign</div>
+                @endif
+                
+                <form action="{{ route('equipment.assign', $equipment) }}" method="POST">
+                    @csrf
+                    <div class="space-y-4">
+                        <div>
+                            <label class="form-label">Assign To</label>
+                            <select name="user_id" class="input" required>
+                                <option value="">Select User...</option>
+                                @foreach($users as $user)
+                                    <option value="{{ $user->id }}" {{ $equipment->user_id == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name }} ({{ $user->department->name ?? 'No Dept' }})
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Notes (Optional)</label>
+                            <input type="text" name="notes" class="input" placeholder="e.g. For new project">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-full justify-center">
+                            {{ $equipment->user_id ? 'Reassign' : 'Assign Equipment' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+            @endcan
         </div>
 
-        <!-- Cleaning History -->
+        <!-- Assignment & Cleaning History -->
         <div class="lg:col-span-2 space-y-6">
+            <div class="glass-card p-6">
+                <h3 class="text-lg font-bold text-slate-800 mb-6">Assignment History</h3>
+                <div class="space-y-4">
+                    @forelse($equipment->assignments as $assignment)
+                        <div class="p-4 rounded-xl border border-slate-100 bg-slate-50/50">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">
+                                        {{ strtoupper(substr($assignment->user->name, 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-slate-800">{{ $assignment->user->name }}</h4>
+                                        <p class="text-xs text-slate-500 mt-0.5">
+                                            Assigned: {{ $assignment->assigned_at->format('M d, Y H:i') }}
+                                            @if($assignment->returned_at)
+                                                <span class="mx-1">•</span> Returned: {{ $assignment->returned_at->format('M d, Y H:i') }}
+                                            @else
+                                                <span class="mx-1">•</span> <span class="text-emerald-600 font-semibold">Currently Using</span>
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            @if($assignment->notes)
+                                <p class="text-sm text-slate-600 mt-3 pl-11">{{ $assignment->notes }}</p>
+                            @endif
+                        </div>
+                    @empty
+                        <div class="text-center py-4 text-sm text-slate-500">No assignment history.</div>
+                    @endforelse
+                </div>
+            </div>
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-lg font-bold text-slate-800">Maintenance & Cleaning History</h3>

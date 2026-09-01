@@ -13,6 +13,22 @@ class Ticket extends Model
     /** @use HasFactory<TicketFactory> */
     use HasFactory;
 
+    protected static function booted()
+    {
+        static::saving(function ($ticket) {
+            // Only update due_at if priority changed and it's not resolved/closed yet
+            if ((!$ticket->exists || $ticket->isDirty('priority')) && !in_array($ticket->status, ['RESOLVED', 'CLOSED'])) {
+                $ticket->due_at = match ($ticket->priority) {
+                    'Low' => now()->addDays(3),
+                    'Medium' => now()->addDays(1),
+                    'High' => now()->addHours(4),
+                    'Critical' => now()->addHours(1),
+                    default => now()->addDays(3),
+                };
+            }
+        });
+    }
+
     protected function casts(): array
     {
         return [

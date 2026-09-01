@@ -93,4 +93,42 @@ class TicketController extends Controller
 
         return redirect()->back()->with('success', 'Ticket updated successfully.');
     }
+
+    public function exportCsv(Request $request)
+    {
+        Gate::authorize('viewAny', Ticket::class);
+
+        $tickets = Ticket::with(['category', 'user', 'assignedUser'])->latest()->get();
+
+        $headers = [
+            "Content-type"        => "text/csv",
+            "Content-Disposition" => "attachment; filename=tickets_" . date('Y-m-d') . ".csv",
+            "Pragma"              => "no-cache",
+            "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
+            "Expires"             => "0"
+        ];
+
+        $columns = ['Ticket Number', 'Title', 'Status', 'Priority', 'Category', 'Created By', 'Assigned To', 'Created At'];
+
+        $callback = function() use($tickets, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($tickets as $ticket) {
+                fputcsv($file, [
+                    $ticket->ticket_number,
+                    $ticket->title,
+                    $ticket->status,
+                    $ticket->priority,
+                    $ticket->category->name ?? 'N/A',
+                    $ticket->user->name ?? 'N/A',
+                    $ticket->assignedUser->name ?? 'N/A',
+                    $ticket->created_at->format('Y-m-d H:i:s')
+                ]);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

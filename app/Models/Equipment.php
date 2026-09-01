@@ -32,4 +32,9 @@ class Equipment extends Model
     {
         return $this->hasMany(CleaningTask::class);
     }
+
+    public function assignments()
+    {
+        return $this->hasMany(EquipmentAssignment::class)->latest('assigned_at');
+    }
 }

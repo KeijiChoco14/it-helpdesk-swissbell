@@ -69,4 +69,19 @@ class User extends Authenticatable
     {
         return $this->hasMany(CleaningTask::class, 'performed_by');
     }
+
+    public function isItStaff(): bool
+    {
+        return in_array($this->role, ['it_admin', 'it_support']);
+    }
+
+    public function isItAdmin(): bool
+    {
+        return $this->role === 'it_admin';
+    }
+
+    public function isItSupport(): bool
+    {
+        return $this->role === 'it_support';
+    }
 }

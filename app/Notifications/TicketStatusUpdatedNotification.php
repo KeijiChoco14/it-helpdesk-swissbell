@@ -24,7 +24,17 @@ class TicketStatusUpdatedNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', 'mail'];
+    }
+
+    public function toMail(object $notifiable): \Illuminate\Notifications\Messages\MailMessage
+    {
+        return (new \Illuminate\Notifications\Messages\MailMessage)
+            ->subject('Ticket Status Updated: ' . $this->ticket->ticket_number)
+            ->line('Your ticket status has been updated to: ' . $this->ticket->status . '.')
+            ->line('Title: ' . $this->ticket->title)
+            ->action('View Ticket', route('tickets.show', $this->ticket->id))
+            ->line('Thank you for using our application!');
     }
 
     public function toDatabase(object $notifiable): array
@@ -36,8 +46,6 @@ class TicketStatusUpdatedNotification extends Notification
             'message' => 'Your ticket status changed to '.$this->ticket->status,
         ];
     }
-
-    /**
      * Get the array representation of the notification.
      *
      * @return array<string, mixed>

@@ -80,9 +80,10 @@ class EquipmentController extends Controller
     {
         Gate::authorize('view', $equipment);
 
-        $equipment->load(['user', 'cleaningTasks.performer']);
+        $equipment->load(['user', 'cleaningTasks.performer', 'assignments.user']);
+        $users = User::orderBy('name')->get();
 
-        return view('equipment.show', compact('equipment'));
+        return view('equipment.show', compact('equipment', 'users'));
     }
 
     /**
@@ -95,5 +96,42 @@ class EquipmentController extends Controller
         $equipment->delete();
 
         return redirect()->route('equipment.index')->with('success', 'Equipment deleted successfully.');
+    }
+
+    public function assign(Request $request, Equipment $equipment)
+    {
+        Gate::authorize('update', $equipment);
+
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'notes' => 'nullable|string'
+        ]);
+
+        // If currently assigned, mark returned
+        if ($equipment->user_id) {
+            $equipment->assignments()->whereNull('returned_at')->update(['returned_at' => now()]);
+        }
+
+        $equipment->update(['user_id' => $validated['user_id']]);
+        
+        $equipment->assignments()->create([
+            'user_id' => $validated['user_id'],
+            'notes' => $validated['notes'] ?? null,
+            'assigned_at' => now(),
+        ]);
+
+        return redirect()->route('equipment.show', $equipment)->with('success', 'Equipment assigned successfully.');
+    }
+
+    public function returnEquipment(Equipment $equipment)
+    {
+        Gate::authorize('update', $equipment);
+
+        if ($equipment->user_id) {
+            $equipment->assignments()->whereNull('returned_at')->update(['returned_at' => now()]);
+            $equipment->update(['user_id' => null]);
+        }
+
+        return redirect()->route('equipment.show', $equipment)->with('success', 'Equipment returned successfully.');
     }
 }
