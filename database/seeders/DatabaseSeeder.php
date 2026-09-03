@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Department;
-use App\Models\Ticket;
+use App\Models\ServiceRequest;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -60,19 +60,18 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Create Tickets
-        Ticket::factory(20)->create(function () {
+        ServiceRequest::factory(20)->create(function () {
             return [
                 'user_id' => User::where('role', 'employee')->inRandomOrder()->first()->id ?? 1,
                 'department_id' => Department::inRandomOrder()->first()->id ?? 1,
                 'category_id' => Category::inRandomOrder()->first()->id ?? 1,
             ];
         });
-    }
+
         // Optional: Assign some service requests to rooms
         $rooms = \App\Models\Room::all();
         if ($rooms->count() > 0) {
             \App\Models\ServiceRequest::all()->each(function ($req) use ($rooms) {
-                // 30% chance to assign a room to existing requests
                 if (rand(1, 100) <= 30) {
                     $req->room_id = $rooms->random()->id;
                     $req->save();
@@ -81,3 +80,5 @@ class DatabaseSeeder extends Seeder
         }
     }
 }
+
+
