@@ -93,11 +93,22 @@
 
     </div>
 
+    <!-- Trend Chart -->
+    <div class="glass-card p-6 mb-6">
+        <h3 class="text-lg font-bold text-slate-800 mb-5 flex items-center gap-2">
+            <svg class="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.7-9m0 0l-5.94.34m5.94-.34l-.34 5.94"/></svg>
+            Tickets Over Time (Last 30 Days)
+        </h3>
+        <div class="relative h-72 w-full">
+            <canvas id="trendChart"></canvas>
+        </div>
+    </div>
+
     <!-- Quick Actions -->
     <div class="glass-card p-6">
         <h3 class="text-lg font-bold text-slate-800 mb-4">Quick Actions</h3>
         <div class="flex flex-wrap gap-3">
-            <a href="{{ route('tickets.index') }}" class="btn btn-primary">
+            <a href="{{ route('service-requests.index') }}" class="btn btn-primary">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"/></svg>
                 Manage Tickets
             </a>
@@ -112,7 +123,7 @@
             const categoryData = {
                 labels: {!! json_encode($stats['by_category']->pluck('name')) !!},
                 datasets: [{
-                    data: {!! json_encode($stats['by_category']->pluck('tickets_count')) !!},
+                    data: {!! json_encode($stats['by_category']->pluck('service_requests_count')) !!},
                     backgroundColor: [
                         '#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#64748b'
                     ],
@@ -157,6 +168,39 @@
                     }
                 }
             });
+
+            // Trend Line Chart
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            const trendData = {
+                labels: {!! json_encode($stats['serviceRequests_over_time']->pluck('date')) !!},
+                datasets: [{
+                    label: 'Tickets Created',
+                    data: {!! json_encode($stats['serviceRequests_over_time']->pluck('count')) !!},
+                    borderColor: '#ef4444',
+                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            };
+            new Chart(trendCtx, {
+                type: 'line',
+                data: trendData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { borderDash: [2, 4] } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
         });
     </script>
 </x-app-layout>
+
+
+

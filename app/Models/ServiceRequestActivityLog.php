@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-use Database\Factories\TicketActivityLogFactory;
+use Database\Factories\ServiceRequestActivityLogFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['ticket_id', 'user_id', 'action', 'description', 'old_values', 'new_values'])]
-class TicketActivityLog extends Model
+#[Fillable(['service_request_id', 'user_id', 'action', 'description', 'old_values', 'new_values'])]
+class ServiceRequestActivityLog extends Model
 {
-    /** @use HasFactory<TicketActivityLogFactory> */
+    /** @use HasFactory<ServiceRequestActivityLogFactory> */
     use HasFactory;
 
     protected function casts(): array
@@ -21,9 +21,9 @@ class TicketActivityLog extends Model
         ];
     }
 
-    public function ticket()
+    public function serviceRequest()
     {
-        return $this->belongsTo(Ticket::class);
+        return $this->belongsTo(ServiceRequest::class);
     }
 
     public function user()

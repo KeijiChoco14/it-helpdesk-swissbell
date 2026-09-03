@@ -7,9 +7,9 @@ use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\KnowledgeBaseArticleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaffController;
-use App\Http\Controllers\TicketAssignmentController;
-use App\Http\Controllers\TicketCommentController;
-use App\Http\Controllers\TicketController;
+use App\Http\Controllers\ServiceRequestAssignmentController;
+use App\Http\Controllers\ServiceRequestCommentController;
+use App\Http\Controllers\ServiceRequestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -47,12 +47,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard.admin')->middleware('role:it_admin');
 
-    Route::get('tickets/export', [TicketController::class, 'exportCsv'])->name('tickets.export');
-    Route::resource('tickets', TicketController::class);
-    Route::get('tickets/{ticket}/comments', [TicketCommentController::class, 'index'])->name('tickets.comments.index');
-    Route::post('tickets/{ticket}/comments', [TicketCommentController::class, 'store'])->name('tickets.comments.store');
-    Route::post('tickets/{ticket}/assign', [TicketAssignmentController::class, 'store'])->name('tickets.assign');
-    Route::post('tickets/{ticket}/rate', [TicketController::class, 'rate'])->name('tickets.rate');
+    // New Canonical Service Request Routes
+    Route::get('service-requests/export', [ServiceRequestController::class, 'exportCsv'])->name('service-requests.export');
+    Route::get('service-requests/kanban', [ServiceRequestController::class, 'kanban'])->name('service-requests.kanban');
+    Route::patch('service-requests/{serviceRequest}/status', [ServiceRequestController::class, 'updateStatus'])->name('service-requests.update-status');
+    Route::resource('service-requests', ServiceRequestController::class)->parameters(['service-requests' => 'serviceRequest']);
+    Route::get('service-requests/{serviceRequest}/comments', [ServiceRequestCommentController::class, 'index'])->name('service-requests.comments.index');
+    Route::post('service-requests/{serviceRequest}/comments', [ServiceRequestCommentController::class, 'store'])->name('service-requests.comments.store');
+    Route::post('service-requests/{serviceRequest}/assign', [ServiceRequestAssignmentController::class, 'store'])->name('service-requests.assign');
+    Route::post('service-requests/{serviceRequest}/rate', [ServiceRequestController::class, 'rate'])->name('service-requests.rate');
+
+    // Legacy Ticket URL Redirects
+    Route::redirect('tickets/export', '/service-requests/export');
+    Route::redirect('tickets/kanban', '/service-requests/kanban');
+    Route::redirect('tickets', '/service-requests');
+    Route::redirect('tickets/create', '/service-requests/create');
+    Route::get('tickets/{id}', function ($id) {
+        return redirect()->route('service-requests.show', $id);
+    });
+    Route::get('tickets/{id}/edit', function ($id) {
+        return redirect()->route('service-requests.edit', $id);
+    });
 
     Route::resource('departments', DepartmentController::class)->except(['show']);
     Route::resource('staff', StaffController::class)->only(['index', 'create', 'store', 'destroy']);
@@ -72,7 +87,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         $notification = auth()->user()->notifications()->findOrFail($id);
         $notification->markAsRead();
 
-        return redirect()->route('tickets.show', $notification->data['ticket_id']);
+        // Check if data contains service_request_id and redirect appropriately
+        $requestId = $notification->data['service_request_id'] ?? $notification->data['ticket_id'] ?? null;
+        if ($requestId) {
+            return redirect()->route('service-requests.show', $requestId);
+        }
+        
+        return back();
     })->name('notifications.read');
 });
 

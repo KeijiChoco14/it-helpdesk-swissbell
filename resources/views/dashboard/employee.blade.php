@@ -10,7 +10,7 @@
                 <h2 class="text-2xl font-bold text-white">Hello, {{ auth()->user()->name }} 👋</h2>
                 <p class="text-sky-200 mt-1">{{ auth()->user()->department->name ?? 'No Department' }} · Need IT help? Create a ticket below.</p>
             </div>
-            <a href="{{ route('tickets.create') }}" class="btn bg-white text-sky-700 hover:bg-sky-50 shadow-lg">
+            <a href="{{ route('service-requests.create') }}" class="btn bg-white text-sky-700 hover:bg-sky-50 shadow-lg">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
                 New Ticket
             </a>
@@ -47,9 +47,10 @@
 
     <!-- View Tickets Link -->
     <div class="glass-card p-6 text-center">
-        <a href="{{ route('tickets.index') }}" class="btn btn-primary">
+        <a href="{{ route('service-requests.index') }}" class="btn btn-primary">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"/></svg>
             View My Tickets
         </a>
     </div>
 </x-app-layout>
+

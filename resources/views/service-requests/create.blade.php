@@ -1,16 +1,16 @@
 <x-app-layout>
     <x-slot name="header">
-        <h1 class="text-2xl font-bold text-slate-900">Create New Ticket</h1>
+        <h1 class="text-2xl font-bold text-slate-900">Create New Request</h1>
     </x-slot>
 
     <div class="max-w-3xl">
         <div class="glass-card">
             <div class="px-8 py-6 border-b border-slate-200/60 bg-gradient-to-r from-slate-50 to-white">
-                <h2 class="text-lg font-bold text-slate-800">Report an IT Issue</h2>
+                <h2 class="text-lg font-bold text-slate-800">Report an Issue / Request Service</h2>
                 <p class="text-sm text-slate-500 mt-1">Fill in the details below and our IT team will get back to you ASAP.</p>
             </div>
 
-            <form action="{{ route('tickets.store') }}" method="POST" class="p-8 space-y-6">
+            <form action="{{ route('service-requests.store') }}" method="POST" class="p-8 space-y-6">
                 @csrf
 
                 <!-- Title -->
@@ -76,13 +76,15 @@
 
                 <!-- Actions -->
                 <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-                    <a href="{{ route('tickets.index') }}" class="btn btn-ghost">Cancel</a>
+                    <a href="{{ route('service-requests.index') }}" class="btn btn-ghost">Cancel</a>
                     <button type="submit" class="btn btn-primary">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>
-                        Submit Ticket
+                        Submit Request
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </x-app-layout>
+
+

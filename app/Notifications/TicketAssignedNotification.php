@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Notifications;
+namespace App$serviceRequestNotifications;
 
-use App\Models\Ticket;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Notification;
-use Illuminate\Queue\SerializesModels;
+use App\Models\ServiceRequest;
+use Illuminate$serviceRequestBus$serviceRequestQueueable;
+use Illuminate$serviceRequestContracts$serviceRequestQueue$serviceRequestShouldQueue;
+use Illuminate$serviceRequestNotifications$serviceRequestNotification;
+use Illuminate$serviceRequestQueue$serviceRequestSerializesModels;
 
 class TicketAssignedNotification extends Notification implements ShouldQueue
 {
@@ -24,24 +24,27 @@ class TicketAssignedNotification extends Notification implements ShouldQueue
         return ['database', 'mail'];
     }
 
-    public function toMail(object $notifiable): \Illuminate\Notifications\Messages\MailMessage
+    public function toMail(object $notifiable): $serviceRequestIlluminate$serviceRequestNotifications$serviceRequestMessages$serviceRequestMailMessage
     {
-        return (new \Illuminate\Notifications\Messages\MailMessage)
+        return (new $serviceRequestIlluminate$serviceRequestNotifications$serviceRequestMessages$serviceRequestMailMessage)
             ->subject('Ticket Assigned: ' . $this->ticket->ticket_number)
             ->line('You have been assigned to ticket ' . $this->ticket->ticket_number . '.')
             ->line('Title: ' . $this->ticket->title)
             ->line('Priority: ' . $this->ticket->priority)
-            ->action('View Ticket', route('tickets.show', $this->ticket->id))
+            ->action('View Ticket', route('service-requests.show', $this->ticket->id))
             ->line('Please review and take necessary action.');
     }
 
     public function toDatabase(object $notifiable): array
     {
         return [
-            'ticket_id' => $this->ticket->id,
+            'service_request_id' => $this->ticket->id,
             'ticket_number' => $this->ticket->ticket_number,
             'title' => $this->ticket->title,
             'message' => 'You have been assigned to ticket '.$this->ticket->ticket_number,
         ];
     }
 }
+
+
+

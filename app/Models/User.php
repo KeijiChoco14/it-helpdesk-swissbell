@@ -35,29 +35,29 @@ class User extends Authenticatable
         return $this->belongsTo(Department::class);
     }
 
-    public function tickets()
+    public function serviceRequests()
     {
-        return $this->hasMany(Ticket::class, 'user_id');
+        return $this->hasMany(ServiceRequest::class, 'user_id');
     }
 
-    public function assignedTickets()
+    public function assignedServiceRequests()
     {
-        return $this->hasMany(Ticket::class, 'assigned_to');
+        return $this->hasMany(ServiceRequest::class, 'assigned_to');
     }
 
     public function comments()
     {
-        return $this->hasMany(TicketComment::class);
+        return $this->hasMany(ServiceRequestComment::class);
     }
 
     public function attachments()
     {
-        return $this->hasMany(TicketAttachment::class);
+        return $this->hasMany(ServiceRequestAttachment::class);
     }
 
     public function activityLogs()
     {
-        return $this->hasMany(TicketActivityLog::class);
+        return $this->hasMany(ServiceRequestActivityLog::class);
     }
 
     public function equipment()
@@ -85,3 +85,4 @@ class User extends Authenticatable
         return $this->role === 'it_support';
     }
 }
+

@@ -2,18 +2,18 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Ticket;
+use App\Models\ServiceRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTicketRequest extends FormRequest
+class StoreServiceRequestRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', Ticket::class);
+        return $this->user()->can('create', ServiceRequest::class);
     }
 
     /**
@@ -30,6 +30,8 @@ class StoreTicketRequest extends FormRequest
             'priority' => 'required|in:Low,Medium,High,Critical',
             'location' => 'nullable|string|max:255',
             'device' => 'nullable|string|max:255',
+            'room_id' => 'nullable|integer', // Since room table might not exist yet, just integer
+            'asset_id' => 'nullable|exists:equipment,id',
         ];
     }
 }

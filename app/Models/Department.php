@@ -18,8 +18,9 @@ class Department extends Model
         return $this->hasMany(User::class);
     }
 
-    public function tickets()
+    public function serviceRequests()
     {
-        return $this->hasMany(Ticket::class);
+        return $this->hasMany(ServiceRequest::class);
     }
 }
+

@@ -11,3 +11,4 @@
         <p class="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{{ $comment->comment }}</p>
     </div>
 </div>
+

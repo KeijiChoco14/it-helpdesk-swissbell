@@ -15,7 +15,7 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.*')">
+                    <x-nav-link :href="route('service-requests.index')" :active="request()->routeIs('service-requests.*')">
                         {{ __('Tickets') }}
                     </x-nav-link>
                     <x-nav-link :href="route('knowledge-base.index')" :active="request()->routeIs('knowledge-base.*')">
@@ -105,7 +105,7 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('tickets.index')" :active="request()->routeIs('tickets.*')">
+            <x-responsive-nav-link :href="route('service-requests.index')" :active="request()->routeIs('service-requests.*')">
                 {{ __('Tickets') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('knowledge-base.index')" :active="request()->routeIs('knowledge-base.*')">
@@ -139,3 +139,5 @@
         </div>
     </div>
 </nav>
+
+

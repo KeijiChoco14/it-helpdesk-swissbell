@@ -2,20 +2,20 @@
 
 namespace App\Models;
 
-use Database\Factories\TicketCommentFactory;
+use Database\Factories\ServiceRequestCommentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['ticket_id', 'user_id', 'comment'])]
-class TicketComment extends Model
+#[Fillable(['service_request_id', 'user_id', 'comment'])]
+class ServiceRequestComment extends Model
 {
-    /** @use HasFactory<TicketCommentFactory> */
+    /** @use HasFactory<ServiceRequestCommentFactory> */
     use HasFactory;
 
-    public function ticket()
+    public function serviceRequest()
     {
-        return $this->belongsTo(Ticket::class);
+        return $this->belongsTo(ServiceRequest::class);
     }
 
     public function user()

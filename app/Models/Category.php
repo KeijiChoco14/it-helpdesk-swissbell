@@ -13,8 +13,9 @@ class Category extends Model
     /** @use HasFactory<CategoryFactory> */
     use HasFactory;
 
-    public function tickets()
+    public function serviceRequests()
     {
-        return $this->hasMany(Ticket::class);
+        return $this->hasMany(ServiceRequest::class);
     }
 }
+

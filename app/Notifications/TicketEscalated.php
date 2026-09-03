@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Notifications;
+namespace App$serviceRequestNotifications;
 
-use App\Models\Ticket;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
-use Illuminate\Queue\SerializesModels;
+use App\Models\ServiceRequest;
+use Illuminate$serviceRequestBus$serviceRequestQueueable;
+use Illuminate$serviceRequestContracts$serviceRequestQueue$serviceRequestShouldQueue;
+use Illuminate$serviceRequestNotifications$serviceRequestMessages$serviceRequestMailMessage;
+use Illuminate$serviceRequestNotifications$serviceRequestNotification;
+use Illuminate$serviceRequestQueue$serviceRequestSerializesModels;
 
 class TicketEscalated extends Notification implements ShouldQueue
 {
@@ -41,7 +41,7 @@ class TicketEscalated extends Notification implements ShouldQueue
                     ->line('A ticket has breached its Service Level Agreement (SLA).')
                     ->line('Priority: ' . $this->ticket->priority)
                     ->line('Title: ' . $this->ticket->title)
-                    ->action('View Ticket', route('tickets.show', $this->ticket->id))
+                    ->action('View Ticket', route('service-requests.show', $this->ticket->id))
                     ->line('Please take immediate action.');
     }
 
@@ -53,9 +53,12 @@ class TicketEscalated extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            'ticket_id' => $this->ticket->id,
+            'service_request_id' => $this->ticket->id,
             'title' => 'SLA Breach: ' . $this->ticket->ticket_number,
             'message' => 'Ticket is overdue based on SLA',
         ];
     }
 }
+
+
+

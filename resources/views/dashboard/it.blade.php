@@ -46,9 +46,10 @@
 
     <!-- Quick Actions -->
     <div class="glass-card p-6 text-center">
-        <a href="{{ route('tickets.index') }}" class="btn btn-primary">
+        <a href="{{ route('service-requests.index') }}" class="btn btn-primary">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"/></svg>
             View Ticket Queue
         </a>
     </div>
 </x-app-layout>
+
