@@ -47,6 +47,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard.admin')->middleware('role:it_admin');
 
+        Route::resource('room-types', \App\Http\Controllers\RoomTypeController::class)->except(['show']);
+    Route::resource('rooms', \App\Http\Controllers\RoomController::class);
+
     // New Canonical Service Request Routes
     Route::get('service-requests/export', [ServiceRequestController::class, 'exportCsv'])->name('service-requests.export');
     Route::get('service-requests/kanban', [ServiceRequestController::class, 'kanban'])->name('service-requests.kanban');
@@ -104,3 +107,4 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+

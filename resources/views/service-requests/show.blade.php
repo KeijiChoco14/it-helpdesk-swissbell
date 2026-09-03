@@ -157,10 +157,22 @@
             <div class="glass-card p-6">
                 <h3 class="text-base font-bold text-slate-800 mb-4">Details</h3>
                 <dl class="space-y-4 text-sm">
-                    <div class="flex items-center justify-between">
-                        <dt class="text-slate-500">Category</dt>
-                        <dd class="font-medium text-slate-800">{{ $serviceRequest->category->name ?? 'N/A' }}</dd>
-                    </div>
+                                          <div class="flex items-center justify-between">
+                          <dt class="text-slate-500">Category</dt>
+                          <dd class="font-medium text-slate-800">{{ $serviceRequest->category->name ?? 'N/A' }}</dd>
+                      </div>
+                      <div class="flex items-center justify-between">
+                          <dt class="text-slate-500">Room</dt>
+                          <dd class="font-medium text-slate-800">
+                              @if($serviceRequest->room)
+                                  <a href="{{ route('rooms.show', $serviceRequest->room_id) }}" class="text-blue-600 hover:underline">
+                                      {{ $serviceRequest->room->room_number }} (Floor {{ $serviceRequest->room->floor }})
+                                  </a>
+                              @else
+                                  N/A
+                              @endif
+                          </dd>
+                      </div>
                     <div class="flex items-center justify-between">
                         <dt class="text-slate-500">Priority</dt>
                         <dd>
@@ -259,6 +271,7 @@
         </div>
     </div>
 </x-app-layout>
+
 
 
 

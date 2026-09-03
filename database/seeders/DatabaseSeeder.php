@@ -68,4 +68,16 @@ class DatabaseSeeder extends Seeder
             ];
         });
     }
+        // Optional: Assign some service requests to rooms
+        $rooms = \App\Models\Room::all();
+        if ($rooms->count() > 0) {
+            \App\Models\ServiceRequest::all()->each(function ($req) use ($rooms) {
+                // 30% chance to assign a room to existing requests
+                if (rand(1, 100) <= 30) {
+                    $req->room_id = $rooms->random()->id;
+                    $req->save();
+                }
+            });
+        }
+    }
 }

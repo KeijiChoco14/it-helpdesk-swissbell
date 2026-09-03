@@ -37,7 +37,7 @@ class ServiceRequestController extends Controller
         return view('service-requests.index', compact('serviceRequests'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         Gate::authorize('create', ServiceRequest::class);
         $categories = Category::where('is_active', true)->get();
@@ -209,3 +209,4 @@ class ServiceRequestController extends Controller
         return response()->json(['success' => true]);
     }
 }
+

@@ -26,7 +26,19 @@
                 </div>
 
                 <!-- Category + Priority Row -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div>
+                        <label for="room_id" class="form-label">Room (Optional)</label>
+                        <select name="room_id" id="room_id" class="form-input">
+                            <option value="">No Room</option>
+                            @foreach($rooms as $room)
+                                <option value="{{ $room->id }}" {{ old('room_id', $preselectedRoom) == $room->id ? 'selected' : '' }}>{{ $room->room_number }} (Floor {{ $room->floor }})</option>
+                            @endforeach
+                        </select>
+                        @error('room_id')
+                            <p class="text-red-500 text-xs mt-1.5">{{ $message }}</p>
+                        @enderror
+                    </div>
                     <div>
                         <label for="category_id" class="form-label">Category</label>
                         <select name="category_id" id="category_id" class="form-input" required>
@@ -63,7 +75,19 @@
                 </div>
 
                 <!-- Location + Device Row -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div>
+                        <label for="room_id" class="form-label">Room (Optional)</label>
+                        <select name="room_id" id="room_id" class="form-input">
+                            <option value="">No Room</option>
+                            @foreach($rooms as $room)
+                                <option value="{{ $room->id }}" {{ old('room_id', $preselectedRoom) == $room->id ? 'selected' : '' }}>{{ $room->room_number }} (Floor {{ $room->floor }})</option>
+                            @endforeach
+                        </select>
+                        @error('room_id')
+                            <p class="text-red-500 text-xs mt-1.5">{{ $message }}</p>
+                        @enderror
+                    </div>
                     <div>
                         <label for="location" class="form-label">Location <span class="text-slate-400 font-normal">(Optional)</span></label>
                         <input type="text" name="location" id="location" class="form-input" placeholder="e.g. Lobby, Room 205" value="{{ old('location') }}">
@@ -86,5 +110,6 @@
         </div>
     </div>
 </x-app-layout>
+
 
 

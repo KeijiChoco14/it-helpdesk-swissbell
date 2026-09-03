@@ -47,6 +47,20 @@
             </a>
         @endif
 
+                @if($role === 'it_admin' || $role === 'it_support')
+            <p class="px-6 pt-4 pb-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Hotel Operations</p>
+            <a href="{{ route('rooms.index') }}" class="sidebar-link {{ request()->routeIs('rooms.*') ? 'active' : '' }}">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.75M5.25 9h.008v.008H5.25V9zm0 3h.008v.008H5.25V12zm0 3h.008v.008H5.25V15zm0 3h.008v.008H5.25V18zm13.5-9h.008v.008H18.75V9zm0 3h.008v.008H18.75V12zm0 3h.008v.008H18.75V15zm0 3h.008v.008H18.75V18z" /></svg>
+                Rooms
+            </a>
+            @if($role === 'it_admin')
+            <a href="{{ route('room-types.index') }}" class="sidebar-link {{ request()->routeIs('room-types.*') ? 'active' : '' }}">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
+                Room Types
+            </a>
+            @endif
+        @endif
+
         <p class="px-6 pt-4 pb-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Management</p>
 
         @if($role === 'it_admin')
@@ -95,5 +109,6 @@
         </div>
     </div>
 </aside>
+
 
 
