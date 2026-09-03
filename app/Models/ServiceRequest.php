@@ -82,21 +82,7 @@ class ServiceRequest extends Model
         return $this->hasMany(ServiceRequestActivityLog::class);
     }
 
-    public function room()
-    {
-        // Nullable because it might not exist yet, but we define the relationship
-        // Actually, Room model doesn't exist yet, but we will add it later.
-        // Returning null or just let Eloquent fail if called before Room exists.
-        // It's safe to define if we don't eager load it everywhere immediately.
-        // But to avoid class not found error, maybe wait.
-        // Actually the instructions said:
-        // belongsTo Room (nullable)
-        // belongsTo Asset/Equipment (nullable)
-        // I will use 'App\Models\Room' as a string. If we don't have Room, we can skip or use string.
-        // I will skip Room for now until we create it in Phase 3, or I can define it if I create a dummy Room model.
-        // Let's not define Room relationship yet to avoid Class not found, or define it with a string.
-        // Let's use string 'App\Models\Room' so PHP doesn't complain about missing class at compile time.
-    }
+
 
     public function asset()
     {
