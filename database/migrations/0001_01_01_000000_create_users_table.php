@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['employee', 'it_support', 'it_admin', 'housekeeping'])->default('employee');
+            $table->string('role')->default('employee');
             $table->foreignId('department_id')->nullable()->constrained('departments')->nullOnDelete();
             $table->rememberToken();
             $table->timestamps();
@@ -49,4 +49,5 @@ return new class extends Migration
         Schema::dropIfExists('sessions');
     }
 };
+
 
