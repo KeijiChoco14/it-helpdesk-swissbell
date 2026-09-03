@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\TicketAttachment;
+use App\Models\ServiceRequestActivityLog;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<TicketAttachment>
+ * @extends Factory<TicketActivityLog>
  */
-class TicketAttachmentFactory extends Factory
+class ServiceRequestActivityLogFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -22,3 +22,4 @@ class TicketAttachmentFactory extends Factory
         ];
     }
 }
+

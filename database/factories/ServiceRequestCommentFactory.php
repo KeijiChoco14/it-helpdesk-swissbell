@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\TicketComment;
+use App\Models\ServiceRequestComment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends Factory<TicketComment>
  */
-class TicketCommentFactory extends Factory
+class ServiceRequestCommentFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -22,3 +22,4 @@ class TicketCommentFactory extends Factory
         ];
     }
 }
+
