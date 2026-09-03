@@ -34,4 +34,8 @@ class Room extends Model
     {
         return $this->hasMany(ServiceRequest::class);
     }
+    public function housekeepingTasks()
+    {
+        return $this->hasMany(HousekeepingTask::class);
+    }
 }

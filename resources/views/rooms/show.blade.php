@@ -41,8 +41,48 @@
             </div>
         </div>
 
-        <!-- Service Request History -->
-        <div class="lg:col-span-2">
+                <!-- Service Request History -->
+        <div class="lg:col-span-2 space-y-6">
+            <div class="glass-card p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-bold text-slate-800">Housekeeping History</h2>
+                    @can('create', App\Models\HousekeepingTask::class)
+                        <a href="{{ route('housekeeping.tasks.create', ['room_id' => $room->id]) }}" class="btn btn-secondary py-1.5 px-3 text-sm">New Task</a>
+                    @endcan
+                </div>
+
+                @if($room->housekeepingTasks->count() > 0)
+                    <div class="overflow-x-auto -mx-6 px-6">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Task #</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Assigned To</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($room->housekeepingTasks()->latest()->take(5)->get() as $hk)
+                                    <tr class="cursor-pointer hover:bg-slate-50" onclick="window.location='{{ route('housekeeping.tasks.show', $hk) }}'">
+                                        <td><span class="font-mono text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-1 rounded-md">{{ $hk->task_number }}</span></td>
+                                        <td><x-task-type-badge :type="$hk->task_type" /></td>
+                                        <td><x-housekeeping-status-badge :status="$hk->status" /></td>
+                                        <td><span class="text-sm text-slate-600">{{ $hk->assignee->name ?? 'Unassigned' }}</span></td>
+                                        <td><span class="text-sm text-slate-500">{{ $hk->created_at->format('M d, Y') }}</span></td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="text-center py-6 bg-slate-50/50 rounded-lg border border-dashed border-slate-200">
+                        <p class="text-slate-500 font-medium text-sm">No recent housekeeping tasks.</p>
+                    </div>
+                @endif
+            </div>
+
             <div class="glass-card p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="text-lg font-bold text-slate-800">Service Request History</h2>
@@ -94,3 +134,4 @@
         </div>
     </div>
 </x-app-layout>
+

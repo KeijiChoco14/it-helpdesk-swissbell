@@ -84,5 +84,13 @@ class User extends Authenticatable
     {
         return $this->role === 'it_support';
     }
-}
+    public function assignedHousekeepingTasks()
+    {
+        return $this->hasMany(HousekeepingTask::class, 'assigned_to');
+    }
 
+    public function inspectedHousekeepingTasks()
+    {
+        return $this->hasMany(HousekeepingTask::class, 'inspected_by');
+    }
+}

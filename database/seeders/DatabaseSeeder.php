@@ -53,6 +53,12 @@ class DatabaseSeeder extends Seeder
             'department_id' => 8, // IT
         ]);
 
+                // Create Housekeeping Staff
+        User::factory(4)->create([
+            'role' => 'housekeeping',
+            'department_id' => 2, // Housekeeping
+        ]);
+
         // Create Employees
         User::factory(5)->create([
             'role' => 'employee',
@@ -80,5 +86,6 @@ class DatabaseSeeder extends Seeder
         }
     }
 }
+
 
 

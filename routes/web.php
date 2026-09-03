@@ -50,6 +50,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('room-types', \App\Http\Controllers\RoomTypeController::class)->except(['show']);
     Route::resource('rooms', \App\Http\Controllers\RoomController::class);
 
+        // Phase 4: Housekeeping Domain
+    Route::get('housekeeping/dashboard', \App\Http\Controllers\HousekeepingDashboardController::class)->name('housekeeping.dashboard');
+    Route::post('housekeeping/tasks/{housekeepingTask}/assign', [\App\Http\Controllers\HousekeepingTaskController::class, 'assign'])->name('housekeeping.tasks.assign');
+    Route::post('housekeeping/tasks/{housekeepingTask}/start', [\App\Http\Controllers\HousekeepingTaskController::class, 'start'])->name('housekeeping.tasks.start');
+    Route::post('housekeeping/tasks/{housekeepingTask}/complete', [\App\Http\Controllers\HousekeepingTaskController::class, 'complete'])->name('housekeeping.tasks.complete');
+    Route::post('housekeeping/tasks/{housekeepingTask}/inspect', [\App\Http\Controllers\HousekeepingTaskController::class, 'inspect'])->name('housekeeping.tasks.inspect');
+    Route::resource('housekeeping/tasks', \App\Http\Controllers\HousekeepingTaskController::class)->names([
+        'index' => 'housekeeping.tasks.index',
+        'create' => 'housekeeping.tasks.create',
+        'store' => 'housekeeping.tasks.store',
+        'show' => 'housekeeping.tasks.show',
+        'edit' => 'housekeeping.tasks.edit',
+        'update' => 'housekeeping.tasks.update',
+        'destroy' => 'housekeeping.tasks.destroy',
+    ]);
+
     // New Canonical Service Request Routes
     Route::get('service-requests/export', [ServiceRequestController::class, 'exportCsv'])->name('service-requests.export');
     Route::get('service-requests/kanban', [ServiceRequestController::class, 'kanban'])->name('service-requests.kanban');
@@ -107,4 +123,5 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
 
