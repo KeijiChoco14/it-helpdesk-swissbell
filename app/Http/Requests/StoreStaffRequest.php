@@ -28,7 +28,7 @@ class StoreStaffRequest extends FormRequest
             'email' => ['nullable', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email'],
             'job_title' => ['nullable', 'string', 'max:255'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', 'string', Rule::in(['employee', 'it_support', 'it_admin'])],
+            'role' => ['required', 'string', Rule::in(['employee', 'it_support', 'it_admin', 'housekeeping'])],
             'department_id' => ['nullable', 'exists:departments,id'],
         ];
     }

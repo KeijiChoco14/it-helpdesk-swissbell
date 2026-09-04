@@ -39,8 +39,8 @@ class HousekeepingTaskPolicy
             return true;
         }
 
-        if ($user->role === 'housekeeping' && $housekeepingTask->assigned_to === $user->id) {
-            return true;
+        if ($user->role === 'housekeeping') {
+            return is_null($housekeepingTask->assigned_to) || $housekeepingTask->assigned_to === $user->id;
         }
 
         return false;

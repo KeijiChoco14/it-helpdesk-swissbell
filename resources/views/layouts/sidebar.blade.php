@@ -35,16 +35,18 @@
             </a>
         @endif
 
-        <a href="{{ route('service-requests.index') }}" class="sidebar-link {{ request()->routeIs('service-requests.*') ? 'active' : '' }}">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z"/></svg>
-            {{ __('app.tickets') }}
-        </a>
-
-        @if($role === 'employee')
-            <a href="{{ route('service-requests.create') }}" class="sidebar-link {{ request()->routeIs('service-requests.create') ? 'active' : '' }}">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                {{ __('app.create_ticket') }}
+        @if(in_array($role, ['it_admin', 'it_support', 'employee']))
+            <a href="{{ route('service-requests.index') }}" class="sidebar-link {{ request()->routeIs('service-requests.*') ? 'active' : '' }}">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z"/></svg>
+                {{ __('app.tickets') }}
             </a>
+
+            @if($role === 'employee')
+                <a href="{{ route('service-requests.create') }}" class="sidebar-link {{ request()->routeIs('service-requests.create') ? 'active' : '' }}">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                    {{ __('app.create_ticket') }}
+                </a>
+            @endif
         @endif
 
                 @if($role === 'it_admin' || $role === 'it_support')
@@ -86,10 +88,12 @@
             </a>
         @endif
 
-        <a href="{{ route('equipment.index') }}" class="sidebar-link {{ request()->routeIs('equipment.*') ? 'active' : '' }}">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" /></svg>
-            {{ __('app.equipment') }}
-        </a>
+        @if(in_array($role, ['it_admin', 'it_support']))
+            <a href="{{ route('equipment.index') }}" class="sidebar-link {{ request()->routeIs('equipment.*') ? 'active' : '' }}">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" /></svg>
+                {{ __('app.equipment') }}
+            </a>
+        @endif
 
         @if(in_array($role, ['it_admin', 'it_support']))
             <a href="{{ route('cleaning-tasks.index') }}" class="sidebar-link {{ request()->routeIs('cleaning-tasks.*') ? 'active' : '' }}">

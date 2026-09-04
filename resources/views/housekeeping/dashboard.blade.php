@@ -65,7 +65,9 @@
         <div>
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-bold text-slate-800">Rooms Requiring Attention</h2>
-                <a href="{{ route('rooms.index') }}" class="text-sm font-medium text-blue-600 hover:text-blue-800">View Rooms</a>
+                @if(in_array(auth()->user()->role, ['it_admin', 'it_support']))
+                    <a href="{{ route('rooms.index') }}" class="text-sm font-medium text-blue-600 hover:text-blue-800">View Rooms</a>
+                @endif
             </div>
 
             <div class="glass-card overflow-hidden">

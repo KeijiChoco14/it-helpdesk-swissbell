@@ -53,8 +53,17 @@ class DatabaseSeeder extends Seeder
             'department_id' => 8, // IT
         ]);
 
-                // Create Housekeeping Staff
-        User::factory(4)->create([
+        // Create Specific Housekeeping Staff for testing
+        $tono = User::create([
+            'name' => 'Tono Housekeeping',
+            'email' => 'tono@hotel.com',
+            'password' => bcrypt('password'),
+            'role' => 'housekeeping',
+            'department_id' => 2, // Housekeeping
+        ]);
+
+        // Create Housekeeping Staff
+        User::factory(3)->create([
             'role' => 'housekeeping',
             'department_id' => 2, // Housekeeping
         ]);
@@ -83,9 +92,23 @@ class DatabaseSeeder extends Seeder
                     $req->save();
                 }
             });
+
+            // Seed Housekeeping Tasks for Tono
+            for ($i = 0; $i < 3; $i++) {
+                \App\Models\HousekeepingTask::create([
+                    'room_id' => $rooms->random()->id,
+                    'task_type' => 'Daily Cleaning',
+                    'priority' => 'Medium',
+                    'status' => \App\Enums\HousekeepingTaskStatus::ASSIGNED,
+                    'assigned_to' => $tono->id,
+                    'scheduled_at' => now()->addHours($i),
+                    'notes' => 'Seeded task for testing housekeeping dashboard.',
+                ]);
+            }
         }
     }
 }
+
 
 
 
