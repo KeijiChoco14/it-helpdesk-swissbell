@@ -56,7 +56,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('housekeeping/tasks/{housekeepingTask}/start', [\App\Http\Controllers\HousekeepingTaskController::class, 'start'])->name('housekeeping.tasks.start');
     Route::post('housekeeping/tasks/{housekeepingTask}/complete', [\App\Http\Controllers\HousekeepingTaskController::class, 'complete'])->name('housekeeping.tasks.complete');
     Route::post('housekeeping/tasks/{housekeepingTask}/inspect', [\App\Http\Controllers\HousekeepingTaskController::class, 'inspect'])->name('housekeeping.tasks.inspect');
-    Route::resource('housekeeping/tasks', \App\Http\Controllers\HousekeepingTaskController::class)->names([
+    Route::resource('housekeeping/tasks', \App\Http\Controllers\HousekeepingTaskController::class)->parameters([
+        'tasks' => 'housekeepingTask'
+    ])->names([
         'index' => 'housekeeping.tasks.index',
         'create' => 'housekeeping.tasks.create',
         'store' => 'housekeeping.tasks.store',
