@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Services\SlaService;
 
-#[Fillable(['ticket_number', 'user_id', 'department_id', 'category_id', 'assigned_to', 'title', 'description', 'priority', 'status', 'location', 'device', 'resolution', 'due_at', 'resolved_at', 'closed_at', 'rating', 'feedback', 'room_id', 'asset_id'])]
+#[Fillable(['ticket_number', 'user_id', 'department_id', 'category_id', 'assigned_to', 'title', 'description', 'priority', 'status', 'location', 'device', 'resolution', 'due_at', 'resolved_at', 'closed_at', 'rating', 'feedback', 'asset_id'])]
 class ServiceRequest extends Model
 {
     /** @use HasFactory<ServiceRequestFactory> */
@@ -52,10 +52,7 @@ class ServiceRequest extends Model
     {
         return $this->belongsTo(Category::class);
     }
-    public function room()
-    {
-        return $this->belongsTo(Room::class);
-    }
+
 
     public function assignedUser()
     {

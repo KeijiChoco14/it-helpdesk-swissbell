@@ -29,7 +29,7 @@
                 <!-- Job Title -->
                 <div class="md:col-span-2">
                     <label for="job_title" class="form-label">Job Title / Position (Optional)</label>
-                    <input type="text" name="job_title" id="job_title" class="form-input @error('job_title') border-red-500 @enderror" value="{{ old('job_title') }}" placeholder="e.g. Front Desk Manager, Housekeeping Supervisor">
+                    <input type="text" name="job_title" id="job_title" class="form-input @error('job_title') border-red-500 @enderror" value="{{ old('job_title') }}" placeholder="e.g. Front Desk Manager, IT Support">
                     @error('job_title')
                         <p class="text-sm text-red-600 mt-1.5">{{ $message }}</p>
                     @enderror

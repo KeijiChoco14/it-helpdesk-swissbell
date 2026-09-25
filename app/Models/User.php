@@ -65,10 +65,7 @@ class User extends Authenticatable
         return $this->hasMany(Equipment::class);
     }
 
-    public function cleaningTasks()
-    {
-        return $this->hasMany(CleaningTask::class, 'performed_by');
-    }
+
 
     public function isItStaff(): bool
     {
@@ -84,13 +81,5 @@ class User extends Authenticatable
     {
         return $this->role === 'it_support';
     }
-    public function assignedHousekeepingTasks()
-    {
-        return $this->hasMany(HousekeepingTask::class, 'assigned_to');
-    }
 
-    public function inspectedHousekeepingTasks()
-    {
-        return $this->hasMany(HousekeepingTask::class, 'inspected_by');
-    }
 }

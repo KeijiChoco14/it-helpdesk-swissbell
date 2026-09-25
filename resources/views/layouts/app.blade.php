@@ -6,7 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'IT Helpdesk') }} — Hotel IT Support</title>
-        <meta name="description" content="Internal IT Helpdesk Ticketing System for hotel operations">
+        <meta name="description" content="Internal IT Helpdesk Ticketing System">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
